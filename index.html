@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./index.css">
+    <title>Atlas Galleon Speed Calculator</title>
+    <script src="sailMaxSpeedCalculator.js"></script>
+</head>
+<body>
+    <div class="top">
+        <div class="sail-main-button-container">
+            <div class="sail-main-button title">Sail Config</div>
+            <div id="speedMain" class="sail-main-button speed">Speed Sails</div>
+            <div id="handlingMain" class="sail-main-button handling">Handling Sails</div>
+            <div id="weightMain" class="sail-main-button weight">Weight Sails</div>
+            <div id="customMain" class="sail-main-button custom">Custom Sails</div>
+        </div>
+        <div id="arrangementContainer" class="sail-arrangement-container">
+            
+        </div>
+    </div>
+    <div class="middle">
+        <div class="calculate-container">
+            <h2 class="calculator-title">
+                Speed Results
+            </h2>
+            <div class="calculate-value-container">
+                <div class="calculate-value-container-2">
+                    <div class="calculate-value-title">
+                        Max Speed Percentage:
+                    </div>
+                    <h3 id="calculateValueMaxPer" class="calculate-value">
+                        
+                    </h3>
+                </div>
+                <div class="calculate-value-container-2">
+                    <div class="calculate-value-title">
+                        Relative Speed Percentage:
+                    </div>
+                    <h3 id="calculateValueRelPer" class="calculate-value">
+
+                    </h3>
+                </div>
+                <div class="calculate-value-container-2">
+                    <div class="calculate-value-title">
+                        Max Speed kN:
+                    </div>
+                    <h3 id="calculateValueKnots" class="calculate-value">
+
+                    </h3>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="bottom">
+        <div class="weight-percentage-container">
+            <div class="weight-percentage title">
+                Weight Percentage
+            </div>
+            <div class="weight-percentage-value-container">
+                <div  class="weight-percentage-value">
+                    <input id="weightPercent" type="number" class="weight-input value" value="10" min="0" max="100"/>
+                        <div class="percent">%</div>
+                </div>
+                <div class="weight-value-container">
+                    <div  class="weight-value">
+                        <div class="weight title">Current Weight</div>
+                        <input id="currentWeight" type="number" class="weight-input value" value="3000" min="0" max="30000" maxlength="5">
+                    </div>
+                    <div  class="weight-value">
+                        <div class="weight title">Maximum Weight</div>
+                        <input id="maximumWeight" type="number" class="weight-input value" min="0" value="30000">
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+   <div id="changeSailModal" class="overlay hidden">
+       <div class="modal">
+           <div class="modal-title">
+               Select a Sail
+           </div>
+           <div class="sail-selection-container">
+                <div id="speedSelection" class="speed-color modal-item">Speed</div>
+                <div id="handlingSelection" class="handle-color modal-item">Handling</div>
+                <div id="weightSelection" class="weight-color modal-item">Weight</div>
+           </div>
+           <div id="modalInputContainer" class="sail-value-container hidden">
+                <div id="modalInputTitle" class="sail-input-title">
+                    Sail Acceleration:
+                </div>
+                <input id="modalInputValue" class="sail-input value" type="number" value="100">
+                <div class="percent sail-input">%</div>
+           </div>
+           <div id="closeModal" class="close-modal">close</div>
+           <div id="confirmModal" class="confirm-modal">confirm</div>
+       </div>
+   </div>
+</body>
+<script src="start.js"></script>
+</html>
