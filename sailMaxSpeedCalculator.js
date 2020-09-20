@@ -44,7 +44,8 @@ var sailItems,
     modalConfirmButton,
     calculateMaxKnot,
     calculateMaxPercent,
-    calculateRelPercent
+    calculateRelPercent,
+    customButton
 
 ////////// Global Function ////////////
 
@@ -149,7 +150,7 @@ function calculatePercentages(){
     relPercentage = curMaxKnots / maxSpeed * 100
 
     calculateMaxKnot.innerHTML = `${Math.round(curMaxKnots*100)/100}kN`
-    calculateMaxPercent.innerHTML = `${Math.round(bestPercentage*100)/100}%`
+    calculateMaxPercent.innerHTML = `${Math.round(bestPercentage*100)/100 ? Math.round(bestPercentage*100)/100:0}%`
     calculateRelPercent.innerHTML = `${Math.round(relPercentage*100)/100}%`
 }
 
@@ -224,23 +225,33 @@ function app(){
 
     let sailCardFunction = (e)=>{
         let cardID
+        let change = false
      
         switch(true){
             case e.target.id.includes("change"):
                 cardID = e.target.parentNode.parentNode.id.replace("sail-", "")
                 currentCard = cardID
                 openChangeModal()
+                change = true
                 break;
             case e.target.id.includes("delete"):
                 cardID = e.target.parentNode.parentNode.id.replace("sail-", "")
                 configArray[cardID] = [0,0]
+                change = true
                 break;
             case e.target.id.includes("special"):
                 cardID = e.target.parentNode.id.replace("sail-", "")
+                change = true
                 break;
         }
+        
         customConfig = configArray;
         loadSailConfig()
+        if(change){
+            prevSelected.removeClass("selected");
+            customButton.addClass("selected");
+            prevSelected = customButton
+        }
     }
 
     for(const element of configButtons ){
@@ -437,4 +448,5 @@ function setContainers(){
     calculateMaxKnot    = document.getElementById("calculateValueKnots");
     calculateRelPercent = document.getElementById("calculateValueRelPer");
     calculateMaxPercent = document.getElementById("calculateValueMaxPer");
+    customButton        = document.getElementById("customMain");
 }
