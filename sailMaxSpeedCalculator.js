@@ -147,6 +147,13 @@ let calculatePercentWeight = ()=>{
     percentWeight = Math.round((currentWeight / maximumWeight) * 10000)/100
 }
 
+let currentValueCheck = ()=>{
+    if(currentWeight>maximumWeight){
+        currentWeight = maximumWeight
+        currentWeightInput.value = currentWeight;
+    }
+}
+
 let calculateCurrentWeight = ()=>{
     currentWeight = Math.round(percentWeight * maximumWeight/10)/10;
 }
@@ -166,8 +173,12 @@ let updatePercentWgt = ()=>{
 
 let updateMaxWgt = ()=>{
     calculateMaxWeight();
+    currentValueCheck();
     maximumWeightInput.innerHTML = maximumWeight
+    console.log("currentWeight",currentWeight)
 }
+
+
 
 function calculatePercentages(type){
     let bestSpeed = 0,
