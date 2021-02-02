@@ -1,4 +1,4 @@
-# Atlas-Ship-Speed-Calculator
+# atlas-ship-speed-calculator
 A ship sail and weight configuration calculator for the game Atlas.
 
 This calculator will calculate highest potential speed in the best wind conditions for a ships current sail configuration and weight percentage.
