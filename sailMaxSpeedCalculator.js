@@ -268,7 +268,7 @@ function app(){
             configArray = customConfig
         }
         loadSailConfig()
-        calculatePercentages();
+        calculatePercentages('sails');
     }
 
 
