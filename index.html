@@ -57,6 +57,28 @@
     </div>
     
     <div class="bottom">
+        <div class="ship-spec-container" id="shipSpecContainer">
+            <div class="ship-spec title">
+                Ship Spec
+            </div>
+            <div class="ship-spec-container-wgt">
+                <div class="ship-spec-title-wgt">
+                    Additional Weight: 
+                    <div class="ship-spec-wgt-value" id="specWgtValue"> 0 </div>
+                </div>
+                <div class="ship-spec-wgt-value-container" id="specWgtCont">
+                    <div class="ship-spec-wgt-button wgt-btn deactive" id="specWgtDecreaseBtn">
+                        -1
+                    </div>
+                    <div class="ship-spec-wgt-points" id="specWgtPoints">
+                        0
+                    </div>
+                    <div class="ship-spec-wgt-button wgt-btn" id="specWgtIncreaseBtn">
+                        +1
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="weight-percentage-container">
             <div class="weight-percentage title">
                 Weight Percentage
@@ -64,7 +86,7 @@
             <div class="weight-percentage-value-container">
                 <div  class="weight-percentage-value">
                     <input id="weightPercent" type="number" class="weight-input value" value="10" min="0" max="100"/>
-                        <div class="percent">%</div>
+                    <div class="percent">%</div>
                 </div>
                 <div class="weight-value-container">
                     <div  class="weight-value">
@@ -73,12 +95,13 @@
                     </div>
                     <div  class="weight-value">
                         <div class="weight title">Maximum Weight</div>
-                        <input id="maximumWeight" type="number" class="weight-input value" min="0" value="30000">
+                        <div id="maximumWeight" type="number" class="weight-input value" min="0" value="30000">30000</div>
                     </div>
                 </div>
                 
             </div>
         </div>
+        
     </div>
    <div id="changeSailModal" class="overlay hidden">
        <div class="modal">
@@ -92,7 +115,7 @@
            </div>
            <div id="modalInputContainer" class="sail-value-container hidden">
                 <div id="modalInputTitle" class="sail-input-title">
-                    Sail Acceleration:
+                    
                 </div>
                 <input id="modalInputValue" class="sail-input value" type="number" value="100">
                 <div class="percent sail-input">%</div>

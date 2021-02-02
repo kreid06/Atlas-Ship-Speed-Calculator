@@ -43,7 +43,7 @@ body{
     display: flex;
     height: 200px;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 /* Universal CSS */
@@ -116,7 +116,7 @@ body{
 }
 .weight-color{
     border-color: black;
-    background-color: black;
+    background-color: green;
 }
 .sail-item.empty{
     background-color: white;
@@ -204,6 +204,9 @@ body{
     width: 100%;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    background-color: teal;
+    border: none
 }
 .weight.value{
     font-size: 22px;
@@ -212,6 +215,80 @@ body{
 }
 .percent{
     background-color: teal;
+}
+
+/* Ship Spec Container */
+
+.ship-spec-container{
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-around;
+    align-items: center;
+    background-color: darkcyan;
+    width: 300px;
+    min-width: 300px;
+}
+
+.ship-spec.title{
+    background-color: orange;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.ship-spec-container-wgt{
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    justify-content: center;
+    align-items:center;
+    flex-wrap: wrap;
+}
+
+.ship-spec-title-wgt{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.ship-spec-wgt-value-container{
+    display: flex;
+    height: 50px;
+    width: 50%;
+    background-color: orange;
+    justify-content: space-between;
+}
+
+.ship-spec-wgt-button{
+    display: flex;
+    height: 100%;
+    width: 20%;
+    background-color: black;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.ship-spec-wgt-button.deactive{
+    display: flex;
+    height: 100%;
+    width: 20%;
+    background-color: teal;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    cursor:not-allowed;
+}
+
+.ship-spec-wgt-points{
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Overlay and Modal CSS*/

@@ -19,6 +19,12 @@ let handleSail = 3.266
 let weightSail = 2.608
 let maxSpeed = 26.4
 let weightFactor = 10.189
+let maxSpecialValue = null;
+let pointsInWgt = 0;
+let additionalWgt = 0;
+let sailWgt = 0;
+
+let lgWgtSailBase =  4000;
 
 let sailskN = null;
 let sailsRelPer = null
@@ -45,7 +51,11 @@ var sailItems,
     calculateMaxKnot,
     calculateMaxPercent,
     calculateRelPercent,
-    customButton
+    customButton,
+    wgtButtons,
+    shipSpecContainer,
+    specWgtPoints,
+    additionalWgtValue
 
 ////////// Global Function ////////////
 
@@ -58,6 +68,17 @@ function loadSailConfig(){
     sailContainer.innerHTML = ""
     
     for([sailID, sailValue] of configArray){
+        let sailValueExt= "";
+
+        switch(sailID){
+            case 2:
+                sailValueExt = `Sail Accel: ${sailValue}%`
+                break;
+            case 3:
+                sailValueExt = `Max Move Weight: ${sailValue}%`
+                break;
+        }
+
         let divContainer =  document.createElement("div")
             // divName   = document.createElement("div"),
             // divedit   = document.createElement("div"),
@@ -69,7 +90,7 @@ function loadSailConfig(){
                     
                 </div>
                 <div id="sail-${sailIndex}-special" class="sail-special">
-                    Sail Accel: ${sailValue}%
+                    ${sailValueExt}
                 </div>
                 <div class="sail-card-button-container">
                     
@@ -115,7 +136,6 @@ function loadSailConfig(){
                     break;
                 case 3:
                     divName.innerHTML = "Weight Sail"
-                    divSpecial.addClass("hidden")
                     divContainer.addClass("weight-color");
                     break;
             }
@@ -123,12 +143,39 @@ function loadSailConfig(){
     }
 
 }
+let calculatePercentWeight = ()=>{
+    percentWeight = Math.round((currentWeight / maximumWeight) * 10000)/100
+}
 
-function calculatePercentages(){
+let calculateCurrentWeight = ()=>{
+    currentWeight = Math.round(percentWeight * maximumWeight/10)/10;
+}
+
+let calculateMaxWeight = ()=>{
+    maximumWeight = 30000 + sailWgt + additionalWgt
+}
+
+let updateCurrentWgt = ()=>{
+    calculatePercentWeight();
+    weightPercentInput.value = percentWeight;    
+}
+let updatePercentWgt = ()=>{
+    calculateCurrentWeight()
+    currentWeightInput.value = currentWeight;
+}
+
+let updateMaxWgt = ()=>{
+    calculateMaxWeight();
+    maximumWeightInput.innerHTML = maximumWeight
+}
+
+function calculatePercentages(type){
     let bestSpeed = 0,
         bestPercentage,
         relPercentage,
         curMaxKnots
+    
+    sailWgt = 0; 
 
     for([sailID, special] of configArray){
         switch(sailID){
@@ -140,9 +187,24 @@ function calculatePercentages(){
                 break;
             case 3:
                 bestSpeed += weightSail
+                sailWgt   += special/100 * 4000
                 break
         }
     }
+    
+    if(type && type === "addWgt" || type === "sails"){
+        updateMaxWgt();
+    }
+    updateCurrentWgt();
+
+
+
+    
+    // updateCurrentWgt();
+    // updatePercentWgt();
+    
+
+    // weightChange()
     let maxSailConfigPercentage = bestSpeed/maxSpeed *100;
     
     curMaxKnots = ((maxSpeed * maxSailConfigPercentage/100) * (weightFactor * Math.sqrt(100 - percentWeight))/100)
@@ -193,7 +255,7 @@ function app(){
                     configArray = [[2,100],[2,100],[2,100],[2,100],[2,100],[2,100]]
                     break;
                 case "weight":
-                    configArray = [[3,0],[3,0],[3,0],[3,0],[3,0],[3,0]]
+                    configArray = [[3,100],[3,100],[3,100],[3,100],[3,100],[3,100]]
                     break;
                 default:
                     configArray = customConfig
@@ -206,6 +268,7 @@ function app(){
             configArray = customConfig
         }
         loadSailConfig()
+        calculatePercentages();
     }
 
 
@@ -238,10 +301,12 @@ function app(){
                 cardID = e.target.parentNode.parentNode.id.replace("sail-", "")
                 configArray[cardID] = [0,0]
                 change = true
+                calculatePercentages('sails');
                 break;
             case e.target.id.includes("special"):
                 cardID = e.target.parentNode.id.replace("sail-", "")
                 change = true
+                console.log('special')
                 break;
         }
         
@@ -281,23 +346,28 @@ function app(){
             case "handlingSelection":
                 !modalSpecialInput ? modalInputContainer.removeClass("hidden") : null
                 modalSpecialInput = true
+                modalInputTitle.innerHTML = "Sail Acceleration:"
                 break;
             case "weightSelection":
-                modalSpecialInput ? modalInputContainer.addClass("hidden") : null
-                modalSpecialInput = false
+                !modalSpecialInput ? modalInputContainer.removeClass("hidden") : null
+                modalSpecialInput = true
+                console.log("weight")
+                modalInputTitle.innerHTML = "Max Move Weight:"
                 break;
             case "closeModal":
                 closeChangeModal();
                 resetChangeModal()
+                calculatePercentages();
                 break;
             case "confirmModal":
                 let type = modalSelected.id.replace("Selection", "")
                 let sailID;
                 let specialValue
-                
+                maxSpecialValue = type == "handling" ? 125 : 300;
+                    
                     targetValue = modalInputValue.value
                     checkDecimalLength(targetValue) ? targetValue = sailModalInputValue  : null
-                    targetValue > 125 ? targetValue = 125 : null
+                    targetValue > maxSpecialValue ? targetValue = maxSpecialValue : null
                     targetValue < 100 ? targetValue = 100  : null;
                     sailModalInputValue  = parseFloat(targetValue)
                 
@@ -312,13 +382,14 @@ function app(){
                         break;
                     case "weight":
                         sailID = 3;
-                        specialValue = 0
+                        specialValue = sailModalInputValue
                         break    
                 }
                 customConfig[currentCard] = [sailID, specialValue]
                 updateConfigList()
                 closeChangeModal()
                 resetChangeModal()
+                calculatePercentages('sails');
                 break;
         }
 
@@ -329,8 +400,14 @@ function app(){
     function modalChangeEventListener(e){
         if(e.target.id === "modalInputValue"){
             targetValue = e.target.value
+            
             checkDecimalLength(e.target.value) ? e.target.value = sailModalInputValue  : null
-            targetValue > 125 ? e.target.value = 125 : null
+            if(currentCard === "handle"){
+                targetValue > 125 ? e.target.value = 125 : null
+            }
+            if(currentCard === "weight"){
+                targetValue > 300 ? e.target.value = 300 : null
+            }
             targetValue < 100 ? e.target.value = 100  : null;
             sailModalInputValue  = parseFloat(e.target.value)
         }
@@ -342,17 +419,11 @@ function app(){
 
     ////////////////// Weight ///////////////
 
-    let weightChange = ()=>{
-        percentWeight = Math.round((currentWeight / maximumWeight) * 10000)/100
-        weightPercentInput.value = percentWeight
-    }
+    
 
-    let percentChange = ()=>{
-        currentWeight = Math.round(percentWeight * maximumWeight/10)/10;
-        currentWeightInput.value = currentWeight
-    }
+    
 
-    let weightInputArray = [weightPercentInput, currentWeightInput, maximumWeightInput]
+    let weightInputArray = [weightPercentInput, currentWeightInput]
     let weightInputFunction = (e)=>{
         let target = e.target
         let targetDecimalLengthCheck = target.value.split(".")[1] ? target.value.split(".")[1].length > 4 : false
@@ -371,50 +442,81 @@ function app(){
                 break;
             case "currentWeight":
                 checkDecimalLength(target.value) ? target.value = currentWeight: null;
-                targetValue > 999999 ? target.value = currentWeight : null
+                targetValue > maximumWeight ? target.value = maximumWeight : null
                 targetValue < 0 ? target.value = currentWeight : null;
                 currentWeight = parseFloat(target.value)
                 break;
-            case "maximumWeight":
-                checkDecimalLength(target.value) ? target.value = maximumWeight : null;
-                targetValue > 999999 ? target.value = maximumWeight : null
-                targetValue < 0 ? target.value = maximumWeight : null;
-                maximumWeight = parseFloat(target.value)
-                break;  
+            // case "maximumWeight":
+            //     checkDecimalLength(target.value) ? target.value = maximumWeight : null;
+            //     targetValue > 999999 ? target.value = maximumWeight : null
+            //     targetValue < 0 ? target.value = maximumWeight : null;
+            //     maximumWeight = parseFloat(target.value)
+            //     break;  
         }
     }
     
     let weightChangeFunction = (e)=>{
         let target = e.target
         let targetValue = target.value
+        console.log(target.id)
         switch (target.id){
             case "weightPercent":
-                percentChange()
+                console.log(percentWeight)
+                console.log(targetValue);
+                updatePercentWgt();
                 break;
             case "currentWeight":
-                if(targetValue > maximumWeight){
-                    maximumWeightInput.value = currentWeight;
-                    maximumWeight = currentWeight
-                };
-                weightChange()
-                break;
-            case "maximumWeight":
-                maximumWeight < 30000 ? maximumWeight = 30000 : null;
-                // if(targetValue < currentWeight){
-                //     currentWeightInput.value = maximumWeight
+                // if(targetValue > maximumWeight){
+                //     currentWeight.value = maximumWeight;
                 //     currentWeight = maximumWeight
-                // }
-                weightChange()
+                // };
+                updateCurrentWgt();
+                // weightChange()
+                break;
         }
-        weightPercentInput.value = percentWeight;
-        currentWeightInput.value = currentWeight;
-        maximumWeightInput.value = maximumWeight
+        calculatePercentages();
     }
 
     for(const weightInput of weightInputArray){
         weightInput.addEventListener('input', weightInputFunction)
         weightInput.addEventListener('change', weightChangeFunction)
     }
+
+    /////////////////// Ship Spec //////////////// 
+    let checkPointsInWgt = ()=>{
+            if (pointsInWgt <= 0 ){
+                wgtButtons[0].addClass("deactive")
+            }else{
+                wgtButtons[0].removeClass("deactive")
+            }
+            if(pointsInWgt >= 60){
+                wgtButtons[1].addClass("deactive")
+            }else{
+                wgtButtons[1].removeClass("deactive")
+
+            }
+            additionalWgt = pointsInWgt * 600
+
+            calculatePercentages("addWgt")
+            additionalWgtValue.innerHTML = additionalWgt
+            specWgtPoints.innerHTML = pointsInWgt
+        }
+
+    let shipMouseFunction = (e)=>{
+        let target = e.target
+        switch(target.id){
+            case "specWgtDecreaseBtn":
+                pointsInWgt = pointsInWgt > 0 ? pointsInWgt - 1 : 0;
+                checkPointsInWgt();
+            break;
+            case "specWgtIncreaseBtn":
+                pointsInWgt = pointsInWgt < 60 ? pointsInWgt + 1 : 60;
+                checkPointsInWgt();
+            break;
+        }
+    }
+
+    
     
     // let maxSailSpeed,
     //     weightFactor;
@@ -427,9 +529,9 @@ function app(){
     // };
 
     // console.log(getMaxSailSpeed(92.61,10));
-
-    document.addEventListener('mousedown', calculatePercentages)
-    document.addEventListener('change', calculatePercentages)
+    shipSpecContainer.addEventListener('mousedown', shipMouseFunction)
+    
+    // document.addEventListener('change', calculatePercentages)
 
 }
 
@@ -449,4 +551,8 @@ function setContainers(){
     calculateRelPercent = document.getElementById("calculateValueRelPer");
     calculateMaxPercent = document.getElementById("calculateValueMaxPer");
     customButton        = document.getElementById("customMain");
+    wgtButtons          = document.getElementsByClassName("wgt-btn");
+    shipSpecContainer   = document.getElementById("shipSpecContainer");
+    specWgtPoints       = document.getElementById("specWgtPoints");
+    additionalWgtValue      = document.getElementById("specWgtValue")
 }
