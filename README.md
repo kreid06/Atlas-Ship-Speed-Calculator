@@ -8,4 +8,4 @@ This currently only supports galleons and more ships will be added in the future
 And eventually it will look prettier.
 
 Click Here to View:
-https://kreid06.github.io/Atlas-Ship-Speed-Calculator/
+https://kreid06.github.io/atlas-ship-speed-calculator/
